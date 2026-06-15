@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://physhing-url-detector.vercel.app/sitemap.xml
