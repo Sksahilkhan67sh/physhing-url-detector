@@ -2,7 +2,7 @@
 //  Groq API key — replace the value below with your key
 //  Get one free at: https://console.groq.com
 // ============================================================
-var API_KEY = 'YOUR_GROQ_API_KEY_HERE';
+var API_KEY = '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';
 // ============================================================
 
 var loadMsgs = [
