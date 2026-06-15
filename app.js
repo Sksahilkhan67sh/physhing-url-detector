@@ -1,12 +1,8 @@
 // ============================================================
-//  Paste your FREE Groq API key below
-//  Get one at: https://console.groq.com
+//  Groq API key — replace the value below with your key
+//  Get one free at: https://console.groq.com
 // ============================================================
-var API_KEY = localStorage.getItem('groq_key') || '';
-if (!API_KEY) {
-  API_KEY = prompt('Enter your Groq API key (get one free at console.groq.com):') || '';
-  if (API_KEY) localStorage.setItem('groq_key', API_KEY);
-}
+var API_KEY = 'YOUR_GROQ_API_KEY_HERE';
 // ============================================================
 
 var loadMsgs = [
@@ -32,12 +28,6 @@ function normUrl(raw) {
 }
 
 function doCheck() {
-  if (!API_KEY) {
-    API_KEY = prompt('Enter your Groq API key (get one free at console.groq.com):') || '';
-    if (API_KEY) localStorage.setItem('groq_key', API_KEY);
-    if (!API_KEY) return;
-  }
-
   var raw = document.getElementById('url').value;
   var url = normUrl(raw);
   var hint = document.getElementById('hint');
