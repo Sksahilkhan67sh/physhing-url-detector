@@ -1,10 +1,3 @@
-// ============================================================
-//  Groq API key — replace the value below with your key
-//  Get one free at: https://console.groq.com
-// ============================================================
-var API_KEY = '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';
-// ============================================================
-
 var loadMsgs = [
   'Checking domain...',
   'Scanning patterns...',
@@ -53,62 +46,25 @@ function doCheck() {
     document.getElementById('loadMsg').textContent = loadMsgs[idx];
   }, 900);
 
-  var prompt_text = 'Analyse this URL for safety. Return ONLY a raw JSON object, no markdown, no explanation.'
-    + '\n\nURL: ' + url
-    + '\n\nReturn exactly this structure:'
-    + '\n{'
-    + '\n  "verdict": "safe",'
-    + '\n  "score": 95,'
-    + '\n  "summary": "One sentence verdict.",'
-    + '\n  "findings": ['
-    + '\n    { "type": "safe", "label": "Category", "text": "One sentence." }'
-    + '\n  ]'
-    + '\n}'
-    + '\n\nRules:'
-    + '\n- verdict: safe, suspicious, or dangerous'
-    + '\n- score: 0 to 100 (100 = completely safe)'
-    + '\n- type: safe, warn, danger, or info'
-    + '\n- 3 to 5 findings'
-    + '\n- Known brands (google, github, youtube, microsoft, apple, amazon, linkedin) = safe score 90+'
-    + '\n- Phishing: misspelled brand, odd TLD (.xyz .tk), deceptive subdomain'
-    + '\n- No HTTPS = warn finding'
-    + '\n- Local IPs (192.168.x.x, 10.x.x.x) = suspicious'
-    + '\n- Return ONLY the JSON object, nothing else';
-
-  fetch('https://api.groq.com/openai/v1/chat/completions', {
+  fetch('/api/check', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + API_KEY
-    },
-    body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
-      messages: [{ role: 'user', content: prompt_text }],
-      max_tokens: 1000,
-      temperature: 0.1
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: url })
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
     clearInterval(ticker);
     ld.style.display = 'none';
     document.getElementById('btn').disabled = false;
-
-    if (data.error) throw new Error(data.error.message);
-
-    var txt = data.choices[0].message.content;
-    var start = txt.indexOf('{');
-    var end = txt.lastIndexOf('}');
-    if (start === -1 || end === -1) throw new Error('Invalid response from AI');
-    var r = JSON.parse(txt.substring(start, end + 1));
-    renderResult(r);
+    if (data.error) throw new Error(data.error);
+    renderResult(data);
   })
   .catch(function(err) {
     clearInterval(ticker);
     ld.style.display = 'none';
     document.getElementById('btn').disabled = false;
     var el = document.getElementById('result');
-    el.innerHTML = '<p style="font-size:13px;color:var(--danger);padding:8px 0;">Error: ' + escHtml(err.message || 'Something went wrong. Check your API key.') + '</p>';
+    el.innerHTML = '<p style="font-size:13px;color:var(--danger);padding:8px 0;">Error: ' + escHtml(err.message || 'Something went wrong.') + '</p>';
     el.className = 'result show';
   });
 }
